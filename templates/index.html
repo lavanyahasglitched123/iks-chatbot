@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IKS-Math Tutor</title>
+    <meta name="description" content="Intelligent Indian Knowledge System Mathematics Tutor">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -11,333 +12,365 @@
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        heading: ['Outfit', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        saffron: { 400: '#ff9933', 500: '#f47c00', 600: '#d96a00' }
-                    }
-                }
-            }
+            theme: { extend: {
+                fontFamily: { sans:['Inter','sans-serif'], heading:['Outfit','sans-serif'], mono:['JetBrains Mono','monospace'] },
+                colors: { saffron:{400:'#ff9933',500:'#f47c00',600:'#d96a00'} }
+            }}
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- KaTeX for math rendering -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 
-    <style>
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+<style>
+*{box-sizing:border-box}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}
 
-        /* ── Glass ── */
-        .glass { background: linear-gradient(135deg, rgba(15,23,42,0.5), rgba(2,6,23,0.85)); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-        .neon-glow { text-shadow: 0 0 8px rgba(251,191,36,0.5), 0 0 16px rgba(245,158,11,0.2); }
+/* ── Glass & Glow ── */
+.glass{background:linear-gradient(135deg,rgba(15,23,42,0.55),rgba(2,6,23,0.88));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.neon{text-shadow:0 0 8px var(--glow,rgba(251,191,36,0.5)),0 0 20px var(--glow2,rgba(245,158,11,0.15))}
 
-        /* ── Markdown ── */
-        .md { font-size: 0.925rem; line-height: 1.75; color: #cbd5e1; }
-        .md p { margin-bottom: 0.6rem; }
-        .md p:last-child { margin-bottom: 0; }
-        .md strong { color: #fde68a; font-weight: 600; }
-        .md em { color: #a5b4fc; font-style: italic; }
-        .md ul { list-style: disc; padding-left: 1.4rem; margin-bottom: 0.6rem; }
-        .md ol { list-style: decimal; padding-left: 1.4rem; margin-bottom: 0.6rem; }
-        .md li { margin-bottom: 0.2rem; }
-        .md li::marker { color: var(--accent, #fbbf24); }
-        .md code { font-family: 'JetBrains Mono', monospace; background: #0f172a; padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-size: 0.85em; color: #fbbf24; border: 1px solid rgba(245,158,11,0.1); }
-        .md pre { background: #0c1222; padding: 1rem 1.2rem; border-radius: 0.6rem; margin: 0.6rem 0; overflow-x: auto; border: 1px solid rgba(100,116,139,0.25); position: relative; }
-        .md pre code { background: transparent; padding: 0; color: #e2e8f0; border: none; font-size: 0.85rem; }
-        .md blockquote { border-left: 3px solid var(--accent, #fbbf24); padding: 0.5rem 1rem; margin: 0.6rem 0; background: rgba(15,23,42,0.5); border-radius: 0 0.5rem 0.5rem 0; color: #94a3b8; }
-        .md hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #334155, transparent); margin: 1rem 0; }
-        .md table { width: 100%; border-collapse: collapse; margin: 0.6rem 0; font-size: 0.875rem; }
-        .md th { background: #0f172a; color: var(--accent, #fbbf24); font-weight: 600; padding: 0.5rem 0.75rem; text-align: left; border: 1px solid #1e293b; }
-        .md td { padding: 0.5rem 0.75rem; border: 1px solid #1e293b; }
-        .md tr:nth-child(even) { background: rgba(15,23,42,0.4); }
+/* ── Mode Themes ── */
+[data-theme="qa"]{--accent:#fbbf24;--accent2:#f59e0b;--accent-light:#fde68a;--glow:rgba(251,191,36,0.5);--glow2:rgba(245,158,11,0.15);--bubble-from:rgba(30,41,59,0.6);--bubble-border:rgba(251,191,36,0.15);--gradient:linear-gradient(135deg,rgba(251,191,36,0.03),transparent)}
+[data-theme="solve"]{--accent:#34d399;--accent2:#10b981;--accent-light:#6ee7b7;--glow:rgba(52,211,153,0.5);--glow2:rgba(16,185,129,0.15);--bubble-from:rgba(6,78,59,0.15);--bubble-border:rgba(52,211,153,0.15);--gradient:linear-gradient(135deg,rgba(52,211,153,0.03),transparent)}
+[data-theme="teach"]{--accent:#818cf8;--accent2:#6366f1;--accent-light:#a5b4fc;--glow:rgba(129,140,248,0.5);--glow2:rgba(99,102,241,0.15);--bubble-from:rgba(49,46,129,0.15);--bubble-border:rgba(129,140,248,0.15);--gradient:linear-gradient(135deg,rgba(129,140,248,0.03),transparent)}
+[data-theme="compare"]{--accent:#f472b6;--accent2:#ec4899;--accent-light:#f9a8d4;--glow:rgba(244,114,182,0.5);--glow2:rgba(236,72,153,0.15);--bubble-from:rgba(131,24,67,0.12);--bubble-border:rgba(244,114,182,0.15);--gradient:linear-gradient(135deg,rgba(244,114,182,0.03),transparent)}
+[data-theme="hint"]{--accent:#fb923c;--accent2:#f97316;--accent-light:#fdba74;--glow:rgba(251,146,60,0.5);--glow2:rgba(249,115,22,0.15);--bubble-from:rgba(124,45,18,0.12);--bubble-border:rgba(251,146,60,0.15);--gradient:linear-gradient(135deg,rgba(251,146,60,0.03),transparent)}
 
-        /* ── Headings with decorative bars ── */
-        .md h1, .md h2, .md h3, .md h4 { font-family: 'Outfit', sans-serif; font-weight: 600; margin-top: 1.2rem; margin-bottom: 0.5rem; position: relative; padding-left: 0.8rem; }
-        .md h1 { font-size: 1.25rem; color: var(--accent, #fbbf24); }
-        .md h2 { font-size: 1.1rem; color: var(--accent, #fbbf24); }
-        .md h3 { font-size: 1rem; color: var(--accent-light, #fde68a); }
-        .md h4 { font-size: 0.95rem; color: var(--accent-light, #fde68a); }
-        .md h1::before, .md h2::before, .md h3::before { content: ''; position: absolute; left: 0; top: 0.15em; height: 1.1em; width: 3px; border-radius: 2px; background: var(--accent, #fbbf24); }
+/* ── Markdown rendering ── */
+.md{font-size:0.9rem;line-height:1.8;color:#cbd5e1}
+.md p{margin-bottom:.55rem}.md p:last-child{margin-bottom:0}
+.md strong{color:var(--accent-light,#fde68a);font-weight:600}
+.md em{color:#93c5fd;font-style:italic}
+.md a{color:var(--accent,#fbbf24);text-decoration:underline;text-underline-offset:2px}
+.md ul{list-style:none;padding-left:.2rem;margin-bottom:.55rem}
+.md ul li{position:relative;padding-left:1.2rem;margin-bottom:.25rem}
+.md ul li::before{content:'›';position:absolute;left:0;color:var(--accent,#fbbf24);font-weight:700;font-size:1.1em}
+.md ol{list-style:none;padding-left:.2rem;margin-bottom:.55rem;counter-reset:ol-counter}
+.md ol li{position:relative;padding-left:1.8rem;margin-bottom:.35rem;counter-increment:ol-counter}
+.md ol li::before{content:counter(ol-counter);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;background:var(--accent,#fbbf24);color:#0f172a}
+.md code{font-family:'JetBrains Mono',monospace;background:rgba(15,23,42,0.7);padding:.1rem .35rem;border-radius:.25rem;font-size:.82em;color:var(--accent,#fbbf24);border:1px solid rgba(100,116,139,0.12)}
+.md pre{background:#0c1222;padding:.85rem 1rem;border-radius:.6rem;margin:.55rem 0;overflow-x:auto;border:1px solid rgba(100,116,139,0.18);position:relative}
+.md pre::before{content:'CODE';position:absolute;top:6px;right:10px;font-size:.55rem;font-weight:700;letter-spacing:.1em;color:#475569;font-family:'JetBrains Mono',monospace}
+.md pre code{background:transparent;padding:0;color:#e2e8f0;border:none;font-size:.82rem}
+.md blockquote{border-left:3px solid var(--accent,#fbbf24);padding:.35rem .85rem;margin:.55rem 0;background:rgba(15,23,42,0.35);border-radius:0 .4rem .4rem 0;color:#94a3b8;font-style:italic}
+.md hr{border:none;height:1px;background:linear-gradient(to right,transparent,var(--accent,#334155),transparent);margin:.8rem 0;opacity:.3}
+.md table{width:100%;border-collapse:separate;border-spacing:0;margin:.6rem 0;font-size:.82rem;border-radius:.5rem;overflow:hidden;border:1px solid rgba(100,116,139,0.15)}
+.md th{background:rgba(15,23,42,0.7);color:var(--accent,#fbbf24);font-weight:600;padding:.5rem .7rem;text-align:left;border-bottom:2px solid var(--accent,#fbbf24);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.md td{padding:.45rem .7rem;border-bottom:1px solid rgba(30,41,59,0.5)}
+.md tr:last-child td{border-bottom:none}
+.md tr:hover td{background:rgba(30,41,59,0.3)}
 
-        /* ── Numbered sections (1. Concept, 2. Example, etc.) ── */
-        .md > ol > li { counter-increment: section; list-style: none; position: relative; margin-bottom: 1rem; padding: 1rem 1.2rem; border-radius: 0.75rem; background: rgba(15,23,42,0.4); border: 1px solid rgba(100,116,139,0.15); }
-        .md > ol > li::before { content: counter(section); position: absolute; top: -8px; left: -8px; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; background: var(--accent, #fbbf24); color: #0f172a; box-shadow: 0 0 12px rgba(245,158,11,0.3); }
-        .md > ol { counter-reset: section; padding-left: 0.5rem; }
+/* ── Headings ── */
+.md h1,.md h2,.md h3,.md h4{font-family:'Outfit',sans-serif;font-weight:600;position:relative;padding-left:.85rem;margin-bottom:.45rem}
+.md h1{font-size:1.15rem;color:var(--accent,#fbbf24);margin-top:1.1rem}
+.md h2{font-size:1.05rem;color:var(--accent,#fbbf24);margin-top:1rem;padding-bottom:.3rem;border-bottom:1px solid rgba(100,116,139,0.1)}
+.md h3{font-size:.95rem;color:var(--accent-light,#fde68a);margin-top:.8rem}
+.md h4{font-size:.9rem;color:var(--accent-light,#fde68a);margin-top:.7rem}
+.md h1::before,.md h2::before,.md h3::before{content:'';position:absolute;left:0;top:.18em;height:1em;width:3px;border-radius:2px;background:var(--accent,#fbbf24)}
 
-        /* ── KaTeX math blocks ── */
-        .katex-display { margin: 0.8rem 0; padding: 0.75rem 1rem; background: rgba(15,23,42,0.5); border-radius: 0.5rem; border: 1px solid rgba(100,116,139,0.15); overflow-x: auto; text-align: center; }
-        .katex { color: #e2e8f0; font-size: 1.05em; }
+/* ── Typing ── */
+.tdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent,#fbbf24);animation:tb 1.4s infinite ease-in-out both}
+.tdot:nth-child(1){animation-delay:-.32s}.tdot:nth-child(2){animation-delay:-.16s}.tdot:nth-child(3){animation-delay:0s}
+@keyframes tb{0%,80%,100%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
 
-        /* ── Typing dots ── */
-        .tdot { display:inline-block; width:7px; height:7px; border-radius:50%; background:#fbbf24; animation:tbounce 1.4s infinite ease-in-out both; }
-        .tdot:nth-child(1){animation-delay:-0.32s} .tdot:nth-child(2){animation-delay:-0.16s} .tdot:nth-child(3){animation-delay:0s}
-        @keyframes tbounce { 0%,80%,100%{transform:scale(0);opacity:.35} 40%{transform:scale(1);opacity:1} }
+/* ── Sidebar ── */
+.mode-btn{width:100%;display:flex;align-items:center;gap:.6rem;padding:.6rem .7rem;border-radius:.55rem;text-align:left;font-weight:500;font-size:.82rem;border:1px solid transparent;color:#64748b;background:transparent;transition:all .25s ease;cursor:pointer;position:relative;overflow:hidden}
+.mode-btn::before{content:'';position:absolute;inset:0;background:var(--btn-gradient,transparent);opacity:0;transition:opacity .25s}
+.mode-btn:hover{color:#e2e8f0}.mode-btn:hover::before{opacity:1}
+.mode-btn.active{border-color:color-mix(in srgb,var(--accent) 40%,transparent);color:var(--accent-light,#fcd34d);background:var(--bubble-from,rgba(30,41,59,0.5))}
+.mode-btn.active .mode-dot{background:var(--accent);box-shadow:0 0 8px var(--glow)}
+.mode-btn.active .mode-icon{transform:scale(1.15)}
+.mode-dot{width:5px;height:5px;border-radius:50%;background:#334155;transition:all .3s;flex-shrink:0}
+.mode-icon{font-size:1.05rem;width:1.3rem;text-align:center;flex-shrink:0;transition:transform .25s}
+.mode-label{flex:1;position:relative;z-index:1}.mode-desc{font-size:.58rem;color:#475569;margin-top:1px}
 
-        /* ── Mode button ── */
-        .mode-btn { width:100%; display:flex; align-items:center; gap:0.75rem; padding:0.6rem 0.8rem; border-radius:0.6rem; text-align:left; font-weight:500; font-size:0.85rem; border:1px solid transparent; color:#94a3b8; background:transparent; transition:all .2s; cursor:pointer; position:relative; overflow:hidden; }
-        .mode-btn:hover { background:rgba(30,41,59,0.5); border-color:rgba(51,65,85,0.4); color:#e2e8f0; }
-        .mode-btn.active { border-color: var(--accent, rgba(245,158,11,0.4)); color: var(--accent-light, #fcd34d); background: rgba(30,41,59,0.7); }
-        .mode-btn.active .mode-dot { background: var(--accent, #fbbf24); box-shadow: 0 0 8px var(--accent, rgba(245,158,11,0.5)); }
-        .mode-dot { width:6px; height:6px; border-radius:50%; background:#475569; transition:all .3s; flex-shrink:0; }
-        .mode-icon { font-size:1.1rem; width:1.4rem; text-align:center; flex-shrink:0; }
-        .mode-label { flex:1; }
-        .mode-desc { font-size:0.65rem; color:#64748b; margin-top:1px; }
+/* ── Chips ── */
+.chip{white-space:nowrap;padding:.3rem .7rem;border-radius:9999px;background:rgba(15,23,42,0.6);border:1px solid #1e293b;color:#64748b;font-size:.7rem;font-weight:500;cursor:pointer;transition:all .2s}
+.chip:hover{border-color:color-mix(in srgb,var(--accent) 35%,transparent);color:var(--accent);background:rgba(30,41,59,0.4);transform:translateY(-1px)}
 
-        /* ── Chip ── */
-        .chip { white-space:nowrap; padding:0.35rem 0.8rem; border-radius:9999px; background:rgba(15,23,42,0.7); border:1px solid #1e293b; color:#94a3b8; font-size:0.72rem; font-weight:500; cursor:pointer; transition:all .15s; }
-        .chip:hover { border-color:rgba(245,158,11,0.3); color:#fbbf24; background:rgba(30,41,59,0.6); }
+/* ── Bot bubble ── */
+.bot-bubble{position:relative;overflow:hidden;background:var(--gradient,transparent)}
+.bot-bubble::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--accent,#fbbf24),transparent);border-radius:2px;opacity:.7}
+.bot-bubble:hover::before{opacity:1}
 
-        /* ── Mode accent colors ── */
-        [data-theme="qa"]      { --accent: #fbbf24; --accent-light: #fde68a; --accent-bg: rgba(251,191,36,0.08); }
-        [data-theme="solve"]   { --accent: #34d399; --accent-light: #6ee7b7; --accent-bg: rgba(52,211,153,0.08); }
-        [data-theme="teach"]   { --accent: #818cf8; --accent-light: #a5b4fc; --accent-bg: rgba(129,140,248,0.08); }
-        [data-theme="compare"] { --accent: #f472b6; --accent-light: #f9a8d4; --accent-bg: rgba(244,114,182,0.08); }
-        [data-theme="hint"]    { --accent: #fb923c; --accent-light: #fdba74; --accent-bg: rgba(251,146,60,0.08); }
+/* ── User bubble ── */
+.user-bubble{background:linear-gradient(135deg,rgba(30,41,59,0.7),rgba(15,23,42,0.6));border:1px solid rgba(100,116,139,0.15)}
 
-        /* ── Bot bubble accent stripe per mode ── */
-        .bot-bubble { position:relative; overflow:hidden; }
-        .bot-bubble::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background: linear-gradient(to bottom, var(--accent, #fbbf24), transparent); border-radius:2px; }
+/* ── Animations ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.anim-bot{animation:slideInLeft .4s ease-out}
+.anim-user{animation:slideInRight .35s ease-out}
+.anim-sys{animation:fadeUp .3s ease-out}
 
-        /* ── Fade in animation ── */
-        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        .msg-anim { animation: fadeSlideUp 0.35s ease-out; }
-    </style>
+/* ── Mobile sidebar ── */
+#sidebar-overlay{display:none;position:fixed;inset:0;z-index:25;background:rgba(0,0,0,0.55);backdrop-filter:blur(4px)}
+#sidebar-overlay.open{display:block}
+#sidebar{transition:transform .3s ease}
+@media(max-width:768px){
+    #sidebar{position:fixed;left:0;top:0;bottom:0;z-index:30;transform:translateX(-100%);width:14.5rem;border-right:1px solid rgba(100,116,139,0.15)}
+    #sidebar.open{transform:translateX(0)}
+}
+@media(min-width:769px){
+    #menu-toggle{display:none!important}
+    #sidebar-overlay{display:none!important}
+    #sidebar-close{display:none!important}
+}
+
+/* ── Chat section bg ── */
+#chat-section{background:radial-gradient(ellipse at top right,rgba(15,23,42,0.3),rgba(2,6,23,0.95)),var(--gradient)}
+</style>
 </head>
 <body class="bg-slate-950 text-slate-200 h-screen flex flex-col font-sans overflow-hidden" data-theme="qa">
 
-    <!-- ─── Header ─── -->
-    <header class="flex items-center justify-between px-6 py-3 glass border-b border-amber-500/20 z-20 shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-full bg-slate-900 border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.15)] flex items-center justify-center text-lg">🪷</div>
-            <h1 class="font-heading font-semibold text-xl tracking-tight text-white">IKS<span class="text-amber-400 neon-glow">-Math Tutor</span></h1>
+<!-- ─── Header ─── -->
+<header class="flex items-center justify-between px-4 md:px-5 py-2.5 glass border-b border-slate-800/40 z-20 shrink-0">
+    <div class="flex items-center gap-2.5">
+        <button id="menu-toggle" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-slate-800/60 transition text-slate-500 hover:text-slate-300 md:hidden" aria-label="Menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-slate-900 border border-amber-500/25 shadow-[0_0_16px_var(--glow2)] flex items-center justify-center text-sm md:text-base transition-shadow">🪷</div>
+        <h1 class="font-heading font-semibold text-lg md:text-xl tracking-tight text-white">IKS<span class="neon" style="color:var(--accent)">-Math Tutor</span></h1>
+    </div>
+    <div id="badge-wrap" class="flex items-center gap-2 px-2.5 py-1 rounded-full border transition-all" style="background:var(--bubble-from);border-color:var(--bubble-border)">
+        <span class="w-1.5 h-1.5 rounded-full transition-colors" style="background:var(--accent);box-shadow:0 0 6px var(--glow)"></span>
+        <span id="active-mode-badge" class="text-[10px] md:text-[11px] font-semibold uppercase tracking-wider transition-colors" style="color:var(--accent-light)">Q&A Mode</span>
+    </div>
+</header>
+
+<!-- ─── Main ─── -->
+<main class="flex-1 flex overflow-hidden relative">
+    <div id="sidebar-overlay"></div>
+
+    <!-- ─── Sidebar ─── -->
+    <aside id="sidebar" class="w-52 md:w-48 lg:w-52 glass border-r border-slate-800/40 flex flex-col shrink-0 z-30 bg-slate-950">
+        <div class="p-3 flex-1">
+            <div class="flex items-center justify-between mb-3 px-0.5">
+                <h2 class="text-[9px] font-bold text-slate-500 uppercase tracking-[.2em]">Modes</h2>
+                <button id="sidebar-close" class="w-6 h-6 flex items-center justify-center rounded hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition md:hidden" aria-label="Close">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <nav id="mode-nav" class="space-y-0.5">
+                <button class="mode-btn active" data-mode="qa" data-label="Q&A" style="--btn-gradient:linear-gradient(135deg,rgba(251,191,36,0.06),transparent)">
+                    <span class="mode-dot"></span><span class="mode-icon">💬</span>
+                    <div><span class="mode-label">Q&A</span><div class="mode-desc">History & concepts</div></div>
+                </button>
+                <button class="mode-btn" data-mode="solve" data-label="Solve" style="--btn-gradient:linear-gradient(135deg,rgba(52,211,153,0.06),transparent)">
+                    <span class="mode-dot"></span><span class="mode-icon">🧮</span>
+                    <div><span class="mode-label">Solve</span><div class="mode-desc">Step-by-step solver</div></div>
+                </button>
+                <button class="mode-btn" data-mode="teach" data-label="Teach" style="--btn-gradient:linear-gradient(135deg,rgba(129,140,248,0.06),transparent)">
+                    <span class="mode-dot"></span><span class="mode-icon">🎓</span>
+                    <div><span class="mode-label">Teach</span><div class="mode-desc">Interactive lessons</div></div>
+                </button>
+                <button class="mode-btn" data-mode="compare" data-label="Compare" style="--btn-gradient:linear-gradient(135deg,rgba(244,114,182,0.06),transparent)">
+                    <span class="mode-dot"></span><span class="mode-icon">⚖️</span>
+                    <div><span class="mode-label">Compare</span><div class="mode-desc">Ancient vs Modern</div></div>
+                </button>
+                <button class="mode-btn" data-mode="hint" data-label="Hint Mode" style="--btn-gradient:linear-gradient(135deg,rgba(251,146,60,0.06),transparent)">
+                    <span class="mode-dot"></span><span class="mode-icon">💡</span>
+                    <div><span class="mode-label">Hint Mode</span><div class="mode-desc">Guided discovery</div></div>
+                </button>
+            </nav>
         </div>
-        <div class="flex items-center gap-3">
-            <div id="mode-indicator" class="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900/80 border border-slate-700/60 transition-all">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]"></span>
-                <span id="active-mode-badge" class="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">Q&A Mode</span>
+        <div class="p-3 border-t border-slate-800/25 text-center">
+            <p class="text-[8px] text-slate-600 font-medium tracking-widest uppercase">✨ Indian Knowledge Systems</p>
+        </div>
+    </aside>
+
+    <!-- ─── Chat ─── -->
+    <section id="chat-section" class="flex-1 flex flex-col relative min-w-0 transition-all duration-500">
+        <div id="messages-container" class="flex-1 overflow-y-auto px-3 md:px-5 py-4 space-y-3.5 pb-44 scroll-smooth">
+
+            <!-- Welcome -->
+            <div class="flex gap-2.5 md:gap-3 max-w-3xl mx-auto items-start anim-bot">
+                <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-900 border flex items-center justify-center shrink-0 text-xs md:text-sm mt-0.5 transition-all" style="border-color:var(--bubble-border);box-shadow:0 0 10px var(--glow2)">🪷</div>
+                <div class="glass border px-4 md:px-5 py-3 md:py-4 rounded-2xl rounded-tl-sm shadow-xl max-w-[90%] md:max-w-[85%] bot-bubble" style="border-color:var(--bubble-border)">
+                    <p class="mb-1.5 text-sm"><strong class="neon" style="color:var(--accent)">Namaste!</strong> Welcome to the <strong>IKS Mathematics Tutor</strong>.</p>
+                    <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Explore Vedic sutras, ancient algorithms, and India's mathematical legacy. Pick a mode on the left and ask anything — or try a suggestion below!</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Typing -->
+        <div id="typing-indicator" class="hidden absolute bottom-44 left-0 right-0 px-3 md:px-5">
+            <div class="flex gap-2.5 max-w-3xl mx-auto items-center anim-bot">
+                <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-900 border border-slate-700/40 flex items-center justify-center shrink-0 opacity-50 text-xs md:text-sm">🪷</div>
+                <div class="glass border border-slate-700/20 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5">
+                    <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
+                </div>
             </div>
         </div>
-    </header>
 
-    <!-- ─── Main ─── -->
-    <main class="flex-1 flex overflow-hidden">
-
-        <!-- ─── Sidebar ─── -->
-        <aside class="w-56 glass border-r border-slate-800/60 flex flex-col shrink-0 z-10">
-            <div class="p-3.5 flex-1">
-                <h2 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-3 px-1">Modes</h2>
-                <nav id="mode-nav" class="space-y-1">
-
-                    <button class="mode-btn active" data-mode="qa" data-label="Q&A">
-                        <span class="mode-dot"></span>
-                        <span class="mode-icon">💬</span>
-                        <div><span class="mode-label">Q&A</span><div class="mode-desc">History & concepts</div></div>
-                    </button>
-
-                    <button class="mode-btn" data-mode="solve" data-label="Solve">
-                        <span class="mode-dot"></span>
-                        <span class="mode-icon">🧮</span>
-                        <div><span class="mode-label">Solve</span><div class="mode-desc">Step-by-step solver</div></div>
-                    </button>
-
-                    <button class="mode-btn" data-mode="teach" data-label="Teach">
-                        <span class="mode-dot"></span>
-                        <span class="mode-icon">🎓</span>
-                        <div><span class="mode-label">Teach</span><div class="mode-desc">Interactive lessons</div></div>
-                    </button>
-
-                    <button class="mode-btn" data-mode="compare" data-label="Compare">
-                        <span class="mode-dot"></span>
-                        <span class="mode-icon">⚖️</span>
-                        <div><span class="mode-label">Compare</span><div class="mode-desc">Ancient vs Modern</div></div>
-                    </button>
-
-                    <button class="mode-btn" data-mode="hint" data-label="Hint Mode">
-                        <span class="mode-dot"></span>
-                        <span class="mode-icon">💡</span>
-                        <div><span class="mode-label">Hint Mode</span><div class="mode-desc">Guided discovery</div></div>
-                    </button>
-
-                </nav>
+        <!-- Input -->
+        <div class="absolute bottom-0 left-0 right-0 px-3 md:px-5 pb-3 md:pb-4 pt-0 bg-gradient-to-t from-slate-950 via-slate-950/98 to-transparent z-10">
+            <div id="chips-bar" class="max-w-3xl mx-auto mb-2 flex gap-1.5 overflow-x-auto pb-1"></div>
+            <div class="max-w-3xl mx-auto relative">
+                <textarea id="chat-input" rows="1" placeholder="Ask about Indian mathematics..."
+                    class="w-full bg-slate-900/70 border border-slate-700/50 rounded-xl px-3.5 md:px-4 py-3 pr-11 text-sm text-slate-100 placeholder-slate-500 focus:outline-none transition-all resize-none overflow-hidden shadow-lg"
+                    style="--tw-ring-color:color-mix(in srgb,var(--accent) 30%,transparent)"
+                    onfocus="this.style.borderColor='color-mix(in srgb,var(--accent) 40%,transparent)';this.style.boxShadow='0 0 0 1px color-mix(in srgb,var(--accent) 20%,transparent)'"
+                    onblur="this.style.borderColor='';this.style.boxShadow=''"
+                    oninput="this.style.height='';this.style.height=Math.min(this.scrollHeight,150)+'px'"></textarea>
+                <button id="send-btn" class="absolute right-2 bottom-1.5 h-8 w-8 flex items-center justify-center text-white rounded-lg transition-all shadow-md disabled:opacity-25 disabled:cursor-not-allowed" style="background:linear-gradient(135deg,var(--accent2),var(--accent))">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </button>
             </div>
-            <div class="p-3 border-t border-slate-800/40 text-center">
-                <p class="text-[9px] text-slate-600 font-medium tracking-wide">✨ INDIAN KNOWLEDGE SYSTEMS</p>
-            </div>
-        </aside>
+        </div>
+    </section>
+</main>
 
-        <!-- ─── Chat ─── -->
-        <section class="flex-1 flex flex-col relative">
-            <div id="messages-container" class="flex-1 overflow-y-auto p-5 space-y-4 pb-48 scroll-smooth">
-
-                <!-- Welcome -->
-                <div class="flex gap-3 max-w-3xl mx-auto items-start msg-anim">
-                    <div class="w-8 h-8 rounded-full bg-slate-900 border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.12)] flex items-center justify-center shrink-0 text-sm mt-0.5">🪷</div>
-                    <div class="glass border border-slate-700/30 px-5 py-4 rounded-2xl rounded-tl-sm shadow-xl md:max-w-[85%] md bot-bubble">
-                        <p class="mb-2 text-sm"><strong class="neon-glow text-amber-400">Namaste!</strong> Welcome to the <strong>IKS Mathematics Tutor</strong>.</p>
-                        <p class="text-sm text-slate-400">Explore Vedic sutras, ancient algorithms, and the brilliant mathematical legacy of India. Select a mode and ask away!</p>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Typing -->
-            <div id="typing-indicator" class="hidden absolute bottom-48 left-0 right-0 px-5">
-                <div class="flex gap-3 max-w-3xl mx-auto items-center">
-                    <div class="w-8 h-8 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center shrink-0 opacity-50 text-sm">🪷</div>
-                    <div class="glass border border-slate-700/30 px-4 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1.5">
-                        <span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input -->
-            <div class="absolute bottom-0 left-0 right-0 p-5 pt-0 bg-gradient-to-t from-slate-950 via-slate-950/98 to-transparent z-10">
-                <div id="chips-bar" class="max-w-3xl mx-auto mb-2.5 flex gap-1.5 overflow-x-auto pb-1"></div>
-                <div class="max-w-3xl mx-auto relative">
-                    <textarea id="chat-input" rows="1" placeholder="Ask about Indian mathematics..."
-                        class="w-full bg-slate-900/80 border border-slate-700/60 rounded-xl px-4 py-3 pr-12 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/40 focus:ring-1 focus:ring-amber-500/30 transition-all resize-none overflow-hidden shadow-lg"
-                        oninput="this.style.height='';this.style.height=Math.min(this.scrollHeight,150)+'px'"></textarea>
-                    <button id="send-btn" class="absolute right-2 bottom-1.5 h-8 w-8 flex items-center justify-center bg-gradient-to-tr from-amber-600 to-saffron-500 hover:from-amber-500 hover:to-saffron-400 text-white rounded-lg transition-all shadow disabled:opacity-30 disabled:cursor-not-allowed">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-                    </button>
-                </div>
-                <p class="max-w-3xl mx-auto text-center mt-1.5 text-[9px] text-slate-600">Mode-aware responses · Markdown & LaTeX rendered</p>
-            </div>
-        </section>
-    </main>
-
-    <script>
-    // ── Config per mode ──
-    const MODE_CONFIG = {
-        qa:      { label:'Q&A',       chips: ['Who was Aryabhata?','What is Sulba Sutras?','History of zero in India','Kerala school of mathematics'] },
-        solve:   { label:'Solve',     chips: ['Solve 98 × 97','Find 35² using Vedic math','Solve 104 × 108','Divide 10025 ÷ 89'] },
-        teach:   { label:'Teach',     chips: ['Teach Nikhilam sutra','Teach Urdhva-tiryagbhyam','Explain Ekadhikena Purvena','Teach digit-sum verification'] },
-        compare: { label:'Compare',   chips: ['Compare squaring near 100','Vedic vs long multiplication','Ancient vs modern division','Mental math: Vedic vs conventional'] },
-        hint:    { label:'Hint Mode', chips: ['Hint: solve 97 × 93','Hint: find 996²','Hint: 1012 × 1009','Hint: cube root of 250047'] }
-    };
-
-    let currentMode = 'qa';
-    let chatHistory = [];
-
-    const modeBtns     = document.querySelectorAll('.mode-btn');
-    const badge        = document.getElementById('active-mode-badge');
-    const chatInput    = document.getElementById('chat-input');
-    const sendBtn      = document.getElementById('send-btn');
-    const msgContainer = document.getElementById('messages-container');
-    const typingEl     = document.getElementById('typing-indicator');
-    const chipsBar     = document.getElementById('chips-bar');
-
-    // ── Render chips for mode ──
-    function renderChips(mode) {
-        const items = MODE_CONFIG[mode]?.chips || [];
-        chipsBar.innerHTML = items.map(t => `<button class="chip" data-text="${t}">${t}</button>`).join('');
-        chipsBar.querySelectorAll('.chip').forEach(c => {
-            c.addEventListener('click', function(){ chatInput.value = this.dataset.text; chatInput.focus(); chatInput.style.height=''; chatInput.style.height=Math.min(chatInput.scrollHeight,150)+'px'; });
-        });
+<script>
+// ── Mode config with tailored chips ──
+const MODES = {
+    qa: {
+        label:'Q&A',
+        chips:['📜 Who was Aryabhata?','🕉️ What are the Sulba Sutras?','0️⃣ History of zero in India','🌊 Kerala school of mathematics','📐 Ancient geometry in India','🧮 What is Lilavati?']
+    },
+    solve: {
+        label:'Solve',
+        chips:['🧮 Solve 98 × 97','📐 Find 35² using Vedic math','✖️ Solve 104 × 108','➗ Divide 10025 ÷ 89','🔢 Find √7744','⚡ 999 × 998']
+    },
+    teach: {
+        label:'Teach',
+        chips:['📖 Teach Nikhilam sutra','📖 Teach Urdhva-tiryagbhyam','📖 Explain Ekadhikena Purvena','📖 Teach digit-sum verification','📖 Teach Vinculum method','📖 Teach Anurupyena sutra']
+    },
+    compare: {
+        label:'Compare',
+        chips:['⚖️ Squaring near 100','⚖️ Vedic vs long multiplication','⚖️ Ancient vs modern division','⚖️ Mental math comparison','⚖️ Factoring methods','⚖️ Square root techniques']
+    },
+    hint: {
+        label:'Hint Mode',
+        chips:['💡 Hint: solve 97 × 93','💡 Hint: find 996²','💡 Hint: 1012 × 1009','💡 Hint: cube root of 250047','💡 Hint: 88 × 76','💡 Hint: divide 1225 by 25']
     }
-    renderChips('qa');
+};
 
-    // ── Mode switching ──
-    modeBtns.forEach(btn => {
-        btn.addEventListener('click', function(){
-            modeBtns.forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            currentMode = this.dataset.mode;
-            document.body.dataset.theme = currentMode;
-            badge.textContent = (this.dataset.label || currentMode) + ' Mode';
-            renderChips(currentMode);
-            if (chatHistory.length > 0) addSystemMsg('Switched to <strong>' + this.dataset.label + '</strong> mode.');
+let currentMode='qa', chatHistory=[];
+const modeBtns=document.querySelectorAll('.mode-btn'), badge=document.getElementById('active-mode-badge');
+const chatInput=document.getElementById('chat-input'), sendBtn=document.getElementById('send-btn');
+const msgC=document.getElementById('messages-container'), typingEl=document.getElementById('typing-indicator');
+const chipsBar=document.getElementById('chips-bar');
+const sidebar=document.getElementById('sidebar'), overlay=document.getElementById('sidebar-overlay');
+const menuToggle=document.getElementById('menu-toggle'), sidebarClose=document.getElementById('sidebar-close');
+
+function openSidebar(){sidebar.classList.add('open');overlay.classList.add('open')}
+function closeSidebar(){sidebar.classList.remove('open');overlay.classList.remove('open')}
+menuToggle.addEventListener('click',openSidebar);
+sidebarClose.addEventListener('click',closeSidebar);
+overlay.addEventListener('click',closeSidebar);
+
+function renderChips(mode){
+    const items=MODES[mode]?.chips||[];
+    chipsBar.innerHTML=items.map(t=>{
+        const clean=t.replace(/^[\p{Emoji}\s]+/u,'').trim();
+        return `<button class="chip" data-text="${clean}">${t}</button>`;
+    }).join('');
+    chipsBar.querySelectorAll('.chip').forEach(c=>{
+        c.addEventListener('click',function(){
+            chatInput.value=this.dataset.text;
+            chatInput.focus();
+            chatInput.style.height='';
+            chatInput.style.height=Math.min(chatInput.scrollHeight,150)+'px';
         });
     });
+}
+renderChips('qa');
 
-    // ── Send ──
-    chatInput.addEventListener('keydown', e => { if (e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-    sendBtn.addEventListener('click', e => { e.preventDefault(); sendMessage(); });
+// ── Mode switching ──
+modeBtns.forEach(btn=>{
+    btn.addEventListener('click',function(){
+        modeBtns.forEach(b=>b.classList.remove('active'));
+        this.classList.add('active');
+        currentMode=this.dataset.mode;
+        document.body.dataset.theme=currentMode;
+        badge.textContent=(this.dataset.label||currentMode)+' Mode';
+        renderChips(currentMode);
+        if(chatHistory.length>0) addSystemMsg('Switched to <strong>'+this.dataset.label+'</strong> mode');
+        closeSidebar();
+    });
+});
 
-    function scroll(){ msgContainer.scrollTo({ top: msgContainer.scrollHeight, behavior:'smooth' }); }
+chatInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+sendBtn.addEventListener('click',e=>{e.preventDefault();sendMessage();});
 
-    // ── Render math in element ──
-    function renderMath(el) {
-        // Block math: $$...$$
-        el.innerHTML = el.innerHTML.replace(/\$\$([\s\S]*?)\$\$/g, (_, tex) => {
-            try { return '<div class="katex-display">' + katex.renderToString(tex.trim(), { displayMode:true, throwOnError:false }) + '</div>'; }
-            catch(e){ return '$$' + tex + '$$'; }
-        });
-        // Inline math: $...$
-        el.innerHTML = el.innerHTML.replace(/\$([^\$\n]+?)\$/g, (_, tex) => {
-            try { return katex.renderToString(tex.trim(), { displayMode:false, throwOnError:false }); }
-            catch(e){ return '$' + tex + '$'; }
-        });
+function scroll(){msgC.scrollTo({top:msgC.scrollHeight,behavior:'smooth'})}
+
+// ── Clean up stray $ signs from responses ──
+function cleanMath(text){
+    // Remove block LaTeX $$...$$
+    text = text.replace(/\$\$[\s\S]*?\$\$/g, m => {
+        const inner = m.slice(2,-2).trim()
+            .replace(/\\times/g,'×').replace(/\\div/g,'÷').replace(/\\sqrt\{([^}]*)\}/g,'√($1)')
+            .replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g,'($1/$2)')
+            .replace(/\\quad/g,'  ').replace(/\\[a-zA-Z]+/g,'').replace(/[{}]/g,'');
+        return '\n\n> **' + inner.trim() + '**\n\n';
+    });
+    // Remove inline LaTeX $...$
+    text = text.replace(/\$([^\$\n]+?)\$/g, (_, inner) => {
+        const clean = inner.trim()
+            .replace(/\\times/g,'×').replace(/\\div/g,'÷').replace(/\\sqrt\{([^}]*)\}/g,'√($1)')
+            .replace(/\\frac\{([^}]*)\}\{([^}]*)\}/g,'($1/$2)')
+            .replace(/\\quad/g,' ').replace(/\\[a-zA-Z]+/g,'').replace(/[{}]/g,'');
+        return '**' + clean.trim() + '**';
+    });
+    // Clean up any remaining stray LaTeX commands
+    text = text.replace(/\\\\/g,'\n').replace(/\\begin\{[^}]*\}/g,'').replace(/\\end\{[^}]*\}/g,'')
+               .replace(/\\hline/g,'').replace(/\\[a-zA-Z]+/g,' ').replace(/\s{3,}/g, '\n\n');
+    return text;
+}
+
+function addUserMsg(text){
+    const safe=text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    msgC.insertAdjacentHTML('beforeend',`
+        <div class="flex gap-2.5 md:gap-3 max-w-3xl mx-auto justify-end anim-user">
+            <div class="user-bubble backdrop-blur-md px-4 py-3 rounded-2xl rounded-tr-sm shadow-lg max-w-[85%] md:max-w-[78%] text-sm text-slate-100 whitespace-pre-wrap">${safe}</div>
+        </div>`);
+    scroll();
+}
+
+function addBotMsg(rawMd){
+    const cleaned = cleanMath(rawMd);
+    const html = marked.parse(cleaned);
+    const id='b'+Date.now();
+    msgC.insertAdjacentHTML('beforeend',`
+        <div class="flex gap-2.5 md:gap-3 max-w-3xl mx-auto items-start anim-bot">
+            <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-900 border flex items-center justify-center shrink-0 text-xs md:text-sm mt-0.5 transition-all" style="border-color:var(--bubble-border);box-shadow:0 0 10px var(--glow2)">🪷</div>
+            <div id="${id}" class="glass border px-4 md:px-5 py-3.5 md:py-4 rounded-2xl rounded-tl-sm shadow-xl w-full max-w-[90%] md:max-w-[85%] md bot-bubble" style="border-color:var(--bubble-border)">${html}</div>
+        </div>`);
+    scroll();
+}
+
+function addSystemMsg(html){
+    msgC.insertAdjacentHTML('beforeend',`
+        <div class="flex justify-center max-w-3xl mx-auto my-2 anim-sys">
+            <span class="text-[10px] px-3 py-1 rounded-full border" style="color:var(--accent);background:var(--bubble-from);border-color:var(--bubble-border)">${html}</span>
+        </div>`);
+    scroll();
+}
+
+function showTyping(){typingEl.classList.remove('hidden');sendBtn.disabled=true;chatInput.disabled=true;scroll()}
+function hideTyping(){typingEl.classList.add('hidden');sendBtn.disabled=false;chatInput.disabled=false;chatInput.focus()}
+
+async function sendMessage(){
+    const msg=chatInput.value.trim();
+    if(!msg)return;
+    chatInput.value='';chatInput.style.height='auto';
+    addUserMsg(msg);showTyping();
+    try{
+        const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,mode:currentMode,history:chatHistory})});
+        const data=await res.json();
+        if(!res.ok||data.status==='error') throw new Error(data.message||'Server error');
+        hideTyping();addBotMsg(data.response);
+        chatHistory.push({role:'user',content:msg});
+        chatHistory.push({role:'assistant',content:data.response});
+        if(chatHistory.length>20) chatHistory=chatHistory.slice(-20);
+    }catch(err){
+        console.error(err);hideTyping();
+        addBotMsg("⚠️ **Error**: "+err.message+"\n\nPlease check your **Groq API key** in the `.env` file.");
     }
-
-    function addUserMsg(text) {
-        const safe = text.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        msgContainer.insertAdjacentHTML('beforeend', `
-            <div class="flex gap-3 max-w-3xl mx-auto justify-end msg-anim">
-                <div class="bg-gradient-to-br from-indigo-900/60 to-slate-800/60 border border-indigo-500/20 backdrop-blur-md px-4 py-3 rounded-2xl rounded-tr-sm shadow-lg max-w-[80%] text-sm text-slate-100 whitespace-pre-wrap">${safe}</div>
-            </div>`);
-        scroll();
-    }
-
-    function addBotMsg(mdText) {
-        const html = marked.parse(mdText);
-        const id = 'bot-' + Date.now();
-        msgContainer.insertAdjacentHTML('beforeend', `
-            <div class="flex gap-3 max-w-3xl mx-auto items-start msg-anim">
-                <div class="w-8 h-8 rounded-full bg-slate-900 border border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.12)] flex items-center justify-center shrink-0 text-sm mt-0.5">🪷</div>
-                <div id="${id}" class="glass border border-slate-700/30 px-5 py-4 rounded-2xl rounded-tl-sm shadow-xl w-full md:max-w-[85%] md bot-bubble">${html}</div>
-            </div>`);
-        const el = document.getElementById(id);
-        if (el) renderMath(el);
-        scroll();
-    }
-
-    function addSystemMsg(html) {
-        msgContainer.insertAdjacentHTML('beforeend', `
-            <div class="flex justify-center max-w-3xl mx-auto my-2 msg-anim">
-                <span class="text-[11px] text-amber-500/70 bg-amber-500/8 px-3.5 py-1 rounded-full border border-amber-500/15">${html}</span>
-            </div>`);
-        scroll();
-    }
-
-    function showTyping(){ typingEl.classList.remove('hidden'); sendBtn.disabled=true; chatInput.disabled=true; scroll(); }
-    function hideTyping(){ typingEl.classList.add('hidden'); sendBtn.disabled=false; chatInput.disabled=false; chatInput.focus(); }
-
-    async function sendMessage() {
-        const msg = chatInput.value.trim();
-        if (!msg) return;
-        chatInput.value=''; chatInput.style.height='auto';
-        addUserMsg(msg);
-        showTyping();
-
-        try {
-            const res = await fetch('/api/chat', {
-                method:'POST', headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({ message:msg, mode:currentMode, history:chatHistory })
-            });
-            const data = await res.json();
-            if (!res.ok || data.status==='error') throw new Error(data.message || 'Server error');
-
-            hideTyping();
-            addBotMsg(data.response);
-            chatHistory.push({role:'user',content:msg});
-            chatHistory.push({role:'assistant',content:data.response});
-            if (chatHistory.length > 20) chatHistory = chatHistory.slice(-20);
-        } catch(err) {
-            console.error(err);
-            hideTyping();
-            addBotMsg("⚠️ **Error**: " + err.message + "\n\nPlease check your **Groq API key** in the `.env` file.");
-        }
-    }
-    </script>
+}
+</script>
 </body>
 </html>
